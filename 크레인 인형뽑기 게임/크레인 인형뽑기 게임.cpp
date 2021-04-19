@@ -1,26 +1,34 @@
-#include <algorithm>
+#include <stack>
 #include <string>
 #include <vector>
+
 using namespace std;
 
-int solution(vector<vector<int>> routes)
+int solution(vector<vector<int>> board, vector<int> moves)
 {
-    int answer = 1;
-    // n은 차량 수
-    int n = routes.size();
-    sort(routes.begin(), routes.end());
-    // 카메라 설치 마지노선
-    int dist = routes[0][1];
-    for (int i = 0; i < n; i++)
+    int answer = 0;
+    int n = board.size();
+    int m = moves.size();
+    stack<int> box;
+    box.push(101);
+    for (auto i : moves)
     {
-        if (routes[i][1] < dist)
+        for (int j = 0; j < n; j++)
         {
-            dist = routes[i][1];
-        }
-        else if (routes[i][0] > dist)
-        {
-            answer++;
-            dist = routes[i][1];
+            if (board[j][i - 1])
+            {
+                if (box.top() == board[j][i - 1] && !box.empty())
+                {
+                    box.pop();
+                    answer += 2;
+                }
+                else
+                {
+                    box.push(board[j][i - 1]);
+                }
+                board[j][i - 1] = 0;
+                break;
+            }
         }
     }
     return answer;
