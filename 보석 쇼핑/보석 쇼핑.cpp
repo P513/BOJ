@@ -1,59 +1,55 @@
+#include <iostream>
 #include <algorithm>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
-
+#include <set>
 using namespace std;
+
+vector<string> gems = { "A","B","C","D","D","E" };
 
 vector<int> solution(vector<string> gems)
 {
-    map<string, int>::iterator iter;
-    vector<int> answer;
-    vector<string> kinds;
+    // 보석 종류(중복 X)
+    set<string> kinds(gems.begin(), gems.end());
+    vector<int> answer(2);
     // map<보석 종류, 보석 개수>
-    map<string, int> m;
-    // kinds는 gem의 종류 분류용
-    kinds = gems;
-    sort(kinds.begin(), kinds.end());
-    kinds.erase(unique(kinds.begin(), kinds.end()), kinds.end());
-    for (auto i : kinds)
-    {
-        m.insert(make_pair(i.c_str(), 0));
+    unordered_map<string, int> m;
+    int s_idx = 0, e_idx = 0;
+    int min = 0;
+    // 복사가 아닌 참조자
+    for (auto& i : gems) {
+        m[i]++;
+        if (m.size() == kinds.size()) break;
+        e_idx++;
     }
-    // n은 진열대 길이
-    int n = gems.size();
-    // o은 종류 개수
-    int o = kinds.size();
-    // start index
-    int s_idx = 0;
-    // window size
-    int window = o;
-    // end index
-    int e_idx = o + window - 1;
-    for (int i = 0; i < window; i++)
-    {
-        m[gems[i + s_idx]]++;
-    }
-    // sliding window size
-    while (e_idx < n)
-    {
-        bool ans = 1;
-        for (iter = m.begin(); iter != m.end(); iter++)
-        {
-            if (iter->second < 1)
-            {
-                ans = 0;
-                break;
+    min = e_idx - s_idx;
+    answer[0] = s_idx + 1;
+    answer[1] = e_idx + 1;
+    while (e_idx < gems.size()) {
+        // 시작 idx의 jewely
+        string jew = gems[s_idx];
+        m[jew]--;
+        s_idx++;
+        if (m[jew] == 0) {
+            e_idx++;
+            for (; e_idx < gems.size(); e_idx++) {
+                m[gems[e_idx]]++;
+                if (jew == gems[e_idx])break;
             }
+            if (e_idx == gems.size())break;
         }
-        if (ans)
-        {
-            answer.push_back(s_idx);
-            answer.push_back(e_idx);
-            break;
+        if (min > e_idx - s_idx) {
+            answer[0] = s_idx + 1;
+            answer[1] = e_idx + 1;
+            min = e_idx - s_idx;
         }
-        m[gems[e_idx + 1]]++;
-        m[gems[s_idx - 1]]--;
     }
     return answer;
+}
+
+int main() {
+    vector <int> ans;
+    ans = solution(gems);
+    return 0;
 }
