@@ -4,7 +4,6 @@
 #include <set>
 using namespace std;
 
-// 노드에 방문했는지
 int visited[9];
 int n;
 
