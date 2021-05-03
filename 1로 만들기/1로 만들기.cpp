@@ -11,11 +11,7 @@ int main() {
 	dp[2] = 1;
 	dp[3] = 1;
 	for (int i = 4; i <= n; i++) {
-		int MIN = MAX;
-		if (i % 2 == 0)MIN = min(MIN, dp[i / 2]);
-		if (i % 3 == 0)MIN = min(MIN, dp[i / 3]);
-		MIN = min(MIN, dp[i - 1]);
-		dp[i] = MIN + 1;
+		dp[i] = min(dp[i / 3] + i % 3, dp[i / 2] + i % 2)+1;
 	}
 	printf("%d", dp[n]);
 	return 0;
